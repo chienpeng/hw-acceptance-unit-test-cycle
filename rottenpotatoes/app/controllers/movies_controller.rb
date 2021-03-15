@@ -59,7 +59,6 @@ class MoviesController < ApplicationController
       redirect_to movies_path
     else
       @movies = Movie.find_movies_with_same_director(@movie.director)
-      #redirect_to movie_path(@movies)
     end
   end
 
