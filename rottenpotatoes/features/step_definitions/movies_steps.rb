@@ -27,3 +27,13 @@ end
 Then /the director of "(.*)" should be "(.*)"/ do |arg1, arg2|
   Movie.find_by_title(arg1).director == arg2
 end
+
+Then /(.*) seed movies should exist/ do | n_seeds |
+  Movie.count.should be n_seeds.to_i
+end
+
+Then /I should see all of the movies/ do
+  # Make sure that all the movies in the app are visible in the table
+  #fail "Unimplemented"
+  page.all('table#movies tbody tr').count.should == Movie.count
+end

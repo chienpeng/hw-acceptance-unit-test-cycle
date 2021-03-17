@@ -1,4 +1,47 @@
 Using the default profile...
+Feature: display list of movies filtered by MPAA rating
+  As a concerned parent
+  So that I can quickly browse movies appropriate for my family
+  I want to see movies matching only certain MPAA ratings
+
+  Background: movies have been added to database # features/filter_movie_list.feature:7
+    Given the following movies exist:            # features/step_definitions/movies_steps.rb:2
+      | title                   | rating | release_date |
+      | Aladdin                 | G      | 25-Nov-1992  |
+      | The Terminator          | R      | 26-Oct-1984  |
+      | When Harry Met Sally    | R      | 21-Jul-1989  |
+      | The Help                | PG-13  | 10-Aug-2011  |
+      | Chocolat                | PG-13  | 5-Jan-2001   |
+      | Amelie                  | R      | 25-Apr-2001  |
+      | 2001: A Space Odyssey   | G      | 6-Apr-1968   |
+      | The Incredibles         | PG     | 5-Nov-2004   |
+      | Raiders of the Lost Ark | PG     | 12-Jun-1981  |
+      | Chicken Run             | G      | 21-Jun-2000  |
+    And I am on the RottenPotatoes home page     # features/step_definitions/web_steps.rb:44
+    Then 10 seed movies should exist             # features/step_definitions/movies_steps.rb:31
+
+  Scenario: restrict to movies with 'PG' or 'R' ratings # features/filter_movie_list.feature:25
+      # enter step(s) to check the 'PG' and 'R' checkboxes
+      # enter step(s) to uncheck all other checkboxes
+    When I check the following ratings: PG, R           # features/step_definitions/movies_steps.rb:14
+    Then I uncheck the following ratings: G, PG-13      # features/step_definitions/movies_steps.rb:14
+      # enter step to "submit" the search form on the homepage
+    Then I press "Refresh"                              # features/step_definitions/web_steps.rb:52
+      # enter step(s) to ensure that PG and R movies are visible
+      # enter step(s) to ensure that other movies are not visible
+    Then I should see "The Terminator"                  # features/step_definitions/web_steps.rb:105
+    And I should see "When Harry Met Sally"             # features/step_definitions/web_steps.rb:105
+    And I should see "Amelie"                           # features/step_definitions/web_steps.rb:105
+    And I should see "The Incredibles"                  # features/step_definitions/web_steps.rb:105
+    And I should see "Raiders of the Lost Ark"          # features/step_definitions/web_steps.rb:105
+    And I should not see "The Help"                     # features/step_definitions/web_steps.rb:123
+
+  Scenario: all ratings selected                        # features/filter_movie_list.feature:43
+      # see assignment
+    When I check the following ratings: PG, R, G, PG-13 # features/step_definitions/movies_steps.rb:14
+    Then I press "Refresh"                              # features/step_definitions/web_steps.rb:52
+    Then I should see all of the movies                 # features/step_definitions/movies_steps.rb:35
+
 Feature: search for movies by director
   As a movie buff
   So that I can find movies with my favorite director
@@ -32,7 +75,42 @@ Feature: search for movies by director
     Then I should be on the home page                                      # features/step_definitions/web_steps.rb:230
     And I should see "'Alien' has no director info"                        # features/step_definitions/web_steps.rb:105
 
-3 scenarios (3 passed)
-17 steps (17 passed)
-0m1.151s
-Coverage report generated for Cucumber Features to /home/ec2-user/environment/hw-acceptance-unit-test-cycle/rottenpotatoes/coverage. 45 / 56 LOC (80.36%) covered.
+Feature: display list of movies sorted by different criteria
+  As an avid moviegoer
+  So that I can quickly browse movies based on my preferences
+  I want to see movies sorted by title or release date
+
+  Background: movies have been added to database # features/sort_movie_list.feature:7
+    Given the following movies exist:            # features/step_definitions/movies_steps.rb:2
+      | title                   | rating | release_date |
+      | Aladdin                 | G      | 25-Nov-1992  |
+      | The Terminator          | R      | 26-Oct-1984  |
+      | When Harry Met Sally    | R      | 21-Jul-1989  |
+      | The Help                | PG-13  | 10-Aug-2011  |
+      | Chocolat                | PG-13  | 5-Jan-2001   |
+      | Amelie                  | R      | 25-Apr-2001  |
+      | 2001: A Space Odyssey   | G      | 6-Apr-1968   |
+      | The Incredibles         | PG     | 5-Nov-2004   |
+      | Raiders of the Lost Ark | PG     | 12-Jun-1981  |
+      | Chicken Run             | G      | 21-Jun-2000  |
+    And I am on the RottenPotatoes home page     # features/step_definitions/web_steps.rb:44
+    Then 10 seed movies should exist             # features/step_definitions/movies_steps.rb:31
+
+  Scenario: sort movies alphabetically                  # features/sort_movie_list.feature:25
+    When I follow "Movie Title"                         # features/step_definitions/web_steps.rb:56
+      # your steps here
+    Then I should see "Aladdin" before "The Terminator" # features/step_definitions/movies_steps.rb:8
+    And I should see "Amelie" before "Chicken Run"      # features/step_definitions/movies_steps.rb:8
+    And I should see "Chocolat" before "The Help"       # features/step_definitions/movies_steps.rb:8
+
+  Scenario: sort movies in increasing order of release date           # features/sort_movie_list.feature:32
+    When I follow "Release Date"                                      # features/step_definitions/web_steps.rb:56
+      # your steps here
+    Then I should see "The Terminator" before "When Harry Met Sally"  # features/step_definitions/movies_steps.rb:8
+    And I should see "Chocolat" before "The Help"                     # features/step_definitions/movies_steps.rb:8
+    And I should see "2001: A Space Odyssey" before "The Incredibles" # features/step_definitions/movies_steps.rb:8
+
+7 scenarios (7 passed)
+49 steps (49 passed)
+0m0.482s
+Coverage report generated for Cucumber Features to /home/ec2-user/environment/hw-acceptance-unit-test-cycle/rottenpotatoes/coverage. 47 / 56 LOC (83.93%) covered.
